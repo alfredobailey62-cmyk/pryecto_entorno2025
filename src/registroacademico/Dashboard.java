@@ -1,15 +1,14 @@
 package registroacademico;
 
 import registroacademico.Model.Faculty;
-import registroacademico.repository.AcademicRecordRepository;
-import registroacademico.repository.CareerRepository;
-import registroacademico.repository.StudentEnrollmentRepository;
-import registroacademico.repository.StudentRepository;
-import registroacademico.ui.AddStudent;
-import registroacademico.ui.ListStudent;
+import registroacademico.Model.Student;
+import registroacademico.repository.*;
+import registroacademico.ui.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class Dashboard extends JFrame {
 
@@ -22,24 +21,27 @@ public class Dashboard extends JFrame {
         IO.println(Faculty.valueOf("H").getTitle());
         JTabbedPane tabs = new JTabbedPane();
 
+
         // crea los Repositorios
         var careerRepo = new CareerRepository();
+        var subjectRepo = new SubjectRepository();
+        var enrollmentAndSubjectRepo = new EnrollmentAndSubjectRepository();
         var academicRecordRepo = new AcademicRecordRepository();
         var studentEnrollmentRepo = new StudentEnrollmentRepository();
         var studentRepo = new StudentRepository();
 
         //busca las listas en los archivos
         var careers = new ArrayList<>(careerRepo.read());
+        var subjects = new ArrayList<>(subjectRepo.read());
+        var enrollmentAndSubjects = new ArrayList<>(enrollmentAndSubjectRepo.read());
         var academicRecords = new ArrayList<>(academicRecordRepo.read());
         var studentEnrollments = new ArrayList<>(studentEnrollmentRepo.read());
         var students = new ArrayList<>(studentRepo.read());
 
-        IO.println(careers);
-        IO.println(careers.get(0));
-
         //al cerrarse el programa, actualiza los archivos con los cambios
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             careerRepo.save(careers);
+            subjectRepo.save(subjects);
             studentRepo.save(students);
             studentEnrollmentRepo.save(studentEnrollments);
             academicRecordRepo.save(academicRecords);
@@ -47,15 +49,28 @@ public class Dashboard extends JFrame {
 
 
         // --- Agregar pestañas ---
-        tabs.add("Registrar", new AddStudent(careers, studentEnrollments, students));
+        var addStudent = new AddStudent(careers, studentEnrollments, students);
+        var modifyStudent = new ModifyStudent(careers, studentEnrollments, students);
 
+        Consumer<Optional<Student>> findAndModify = (student) -> {
+            if (modifyStudent.setStudent(student))
+                tabs.setSelectedComponent(modifyStudent);
+        };
 
-        tabs.add("Listar", new ListStudent(careers, studentEnrollments, students));
-//        tabs.add("Lista de Materias", pnSubjet);
-//        tabs.add("Lista de Carreras", pnCareer);
-//        tabs.add("Buscar/Modificar", buscar);
-//        tabs.add("Agregar promedio", pnAddProm);
-//        tabs.add("Eliminar", eliminar);
+        var listStudent = new ListStudent(careers, studentEnrollments, students, findAndModify);
+        var listCareer = new ListCareer(careers);
+        var listSubject = new ListSubject(subjects, careers, enrollmentAndSubjects);
+        tabs.add("Registrar", addStudent);
+
+        tabs.add("Listar", listStudent);
+
+        tabs.add("Buscar/Modificar", modifyStudent);
+        tabs.add("Carreras", listCareer);
+        tabs.add("Materias", listSubject);
+
+        tabs.addChangeListener(_ -> {
+            listStudent.refresh();
+        });
 
         add(tabs);
 //

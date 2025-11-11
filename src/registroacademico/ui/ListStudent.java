@@ -8,90 +8,128 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.function.Consumer;
 
-public class ListStudent extends JPanel {
-    private JButton btnSave;
+public class ListStudent extends JPanel implements UIBase {
+    private JButton btnRefresh;
+    private JButton btnDelete;
+    private JButton btnSearch;
     private JTable table;
     private DefaultTableModel model;
 
-    private ArrayList<Career> careers;
-    private ArrayList<StudentEnrollment> studentEnrollments;
-    private ArrayList<Student> students;
 
-    public ListStudent(ArrayList<Career> careers, ArrayList<StudentEnrollment> studentEnrollments, ArrayList<Student> students) {
+    private final ArrayList<Career> careers;
+    private final ArrayList<StudentEnrollment> studentEnrollments;
+    private final ArrayList<Student> students;
+
+
+    public ListStudent(ArrayList<Career> careers, ArrayList<StudentEnrollment> studentEnrollments, ArrayList<Student> students, Consumer<Optional<Student>> modifyStudent) {
         this.careers = careers;
         this.studentEnrollments = studentEnrollments;
         this.students = students;
         init();
-        btnSave.addActionListener(_ -> {
-            JOptionPane.showMessageDialog(this, "Datos guardados correctamente (ejemplo).");
-        });
+
+        // Ejemplo: botón guardar
+        btnRefresh.addActionListener(_ -> refresh());
+
+        // Ejemplo: botón eliminar
+        btnDelete.addActionListener(_ -> delete());
+
+        btnSearch.addActionListener(_ -> modifyStudent.accept(Student.findByID(students, getSelectedId())));
     }
+
 
     private void init() {
         this.setLayout(new BorderLayout());
 
         // Columnas de la tabla
-        var columnNames = new String[]{
-                "Nombre",
-                "Apellido",
-                "Cédula",
-                "Carrera"
+        var columnNames = new String[]{"Nombre", "Apellido", "Cédula", "Estado", "Carrera"};
+
+        model = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // bloquea edición directa
+            }
         };
 
-        // Modelo de la tabla
-        model = new DefaultTableModel(columnNames, 0);
         table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Agregar tabla dentro de un JScrollPane (para que se pueda hacer scroll)
         JScrollPane scrollPane = new JScrollPane(table);
-        this.add(scrollPane, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
 
-        // Botón inferior
-        btnSave = new JButton("Registrar");
-        this.add(btnSave, BorderLayout.SOUTH);
+        // Botones
+        btnRefresh = new JButton("Recargar");
+        btnDelete = new JButton("Eliminar");
+        btnSearch = new JButton("Modificar");
 
-        // Llenar la tabla con los estudiantes
-        cargarEstudiantes();
+        var pnFooter = new JPanel(new GridLayout(3, 1));
+        pnFooter.add(btnRefresh);
+        pnFooter.add(btnSearch);
+        pnFooter.add(btnDelete);
+        add(pnFooter, BorderLayout.EAST);
+
+        // Cargar los estudiantes al iniciar
+        loadModel();
+    }
+
+    /**
+     * Recarga toda la tabla desde la lista actual de estudiantes.
+     */
+    @Override
+    public void refresh() {
+        loadModel();
+        model.fireTableDataChanged(); // notifica que el modelo cambió
+    }
+
+    /**
+     * Elimina el estudiante seleccionado y actualiza la tabla.
+     */
+    private void delete() {
+        var id = getSelectedId();
+        if (id == null) return;
+        students.removeIf(s -> s.getID().equals(id));
+        JOptionPane.showMessageDialog(this, "Estudiante eliminado correctamente.");
+        refresh();
+    }
+
+    private String getSelectedId() {
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona un estudiante para eliminar.");
+            return null;
+        }
+
+        return (String) model.getValueAt(row, 2);
     }
 
     /**
      * Llena la tabla con los datos de los estudiantes actuales.
      */
-    private void cargarEstudiantes() {
-        // Limpia la tabla antes de llenar
-        model.setRowCount(0);
+    private void loadModel() {
+        model.setRowCount(0); // limpia filas
 
         if (students == null || students.isEmpty()) {
-            model.addRow(new Object[]{"(sin datos)", "", ""});
+            model.addRow(new Object[]{"(sin datos)", "", "", "", ""});
             return;
         }
 
-
-        // Agrega cada estudiante como fila
         for (Student s : students) {
+            Optional<StudentEnrollment> se = StudentEnrollment.findByStudentId(studentEnrollments, s.getID());
 
-            int code = -1;
+            Optional<Career> career = Optional.empty();
 
-            for (var e : studentEnrollments) {
-                if (e.getStudentID().equals(s.getID())) {
-                    code = e.getCareerCode();
-                }
+            if (se.isPresent()) {
+                career = Career.findByCode(careers, se.get().getCareerCode());
             }
 
-
-            Career career = null;
-            if (code != -1)
-                for (var e : careers) {
-                    if (e.getCode() == code) {
-                        career = e;
-                    }
-                }
             model.addRow(new Object[]{
                     s.getFirstName(),
                     s.getLastName(),
                     s.getID(),
-                    career != null ? career.getName() : "no hay",
+                    s.isActive() ? "Activo" : "Inactivo",
+                    career.isPresent() ? career.get().getName() : "No esta"
             });
         }
     }

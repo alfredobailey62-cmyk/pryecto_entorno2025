@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+import java.util.Optional;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,5 +21,9 @@ public class Career {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    public static Optional<Career> findByCode(List<Career> list, int code) {
+        return list.stream().filter(e -> e.getCode() == code).findFirst();
     }
 }
