@@ -1,10 +1,8 @@
 package registroacademico.Model;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,10 +10,9 @@ import java.util.Optional;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnrollmentAndSubject {
-    int careerCode;
-    int subjectCode;
+    private int careerCode;
+    private int subjectCode;
 
 
     public static Optional<EnrollmentAndSubject> findByCareerCode(List<EnrollmentAndSubject> list, int careerCode) {

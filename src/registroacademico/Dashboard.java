@@ -2,12 +2,14 @@ package registroacademico;
 
 import registroacademico.Model.Faculty;
 import registroacademico.Model.Student;
+import registroacademico.controller.BaseController;
+import registroacademico.controller.ControllerContext;
+import registroacademico.controller.StudentController;
 import registroacademico.repository.*;
 import registroacademico.ui.*;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Dashboard extends JFrame {
@@ -20,6 +22,11 @@ public class Dashboard extends JFrame {
         setLocationRelativeTo(null);
         IO.println(Faculty.valueOf("H").getTitle());
         JTabbedPane tabs = new JTabbedPane();
+
+
+//        var repositories = new ControllerContext();
+
+
 
 
         // crea los Repositorios
@@ -37,6 +44,11 @@ public class Dashboard extends JFrame {
         var academicRecords = new ArrayList<>(academicRecordRepo.read());
         var studentEnrollments = new ArrayList<>(studentEnrollmentRepo.read());
         var students = new ArrayList<>(studentRepo.read());
+
+        var studentController = new StudentController(studentRepo.read());
+
+        var contect = new ControllerContext<>();
+
 
         //al cerrarse el programa, actualiza los archivos con los cambios
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

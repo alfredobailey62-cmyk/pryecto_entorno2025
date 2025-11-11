@@ -30,6 +30,7 @@ public class ListStudent extends JPanel implements UIBase {
         this.students = students;
         init();
 
+        btnRefresh.doClick();
         // Ejemplo: botón guardar
         btnRefresh.addActionListener(_ -> refresh());
 

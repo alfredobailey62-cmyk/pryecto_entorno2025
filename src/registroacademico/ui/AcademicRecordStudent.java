@@ -156,7 +156,7 @@ public class AcademicRecordStudent extends JPanel {
         this.add(new JLabel("Esta Activo:"));
         this.add(cbActive);
         this.add(new JLabel("Carrera:"));
-        this.add(cbxCareer);
+//        this.add(cbxCareer);
         this.add(new JLabel(""));
         this.add(btnSave);
     }

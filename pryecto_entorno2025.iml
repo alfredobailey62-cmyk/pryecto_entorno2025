@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="flatlaf-3.6.2" level="project" />
     <orderEntry type="library" name="lombok-1.18.42" level="project" />
+    <orderEntry type="library" name="flatlaf-3.6.3" level="project" />
   </component>
 </module>
