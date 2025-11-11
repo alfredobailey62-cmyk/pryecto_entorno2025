@@ -1,0 +1,10 @@
+Licenciatura en Educación Primaria,CE,1000
+Licenciatura en Educación Preescolar,CE,1001
+Profesorado en Educación Primaria,CE,1002
+Profesorado en Educación Media,CE,1003
+Licenciatura en Español,H,1004
+Licenciatura en Inglés,H,1005
+Licenciatura en Geografía e Historia,H,1006
+Licenciatura en Educación Física,H,1007
+Licenciatura en Humanidades con Énfasis en Turismo Geográfico Ecológico,H,1008
+Licenciatura en Derecho y Ciencias Políticas,DCP,1009
