@@ -2,13 +2,14 @@ package registroacademico.ui;
 
 import registroacademico.Model.Career;
 import registroacademico.Model.Student;
-import registroacademico.Model.StudentEnrollment;
+import registroacademico.Model.StudentAndCareer;
+import registroacademico.controller.CareerController;
+import registroacademico.controller.StudentAndCareerController;
+import registroacademico.controller.StudentController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Optional;
-import java.util.Vector;
 
 public class ModifyStudent extends JPanel {
     private JTextField txtFirstName;
@@ -16,35 +17,57 @@ public class ModifyStudent extends JPanel {
     private JTextField txtId;
     private JCheckBox cbActive;
     private JComboBox<Career> cbxCareer;
+    private DefaultComboBoxModel<Career> cbxCareerModel;
     private JButton btnSave;
     private JButton btnSearch;
+    private JButton btnRevert;
 
-    private final ArrayList<Career> careers;
-    private final ArrayList<StudentEnrollment> studentEnrollments;
-    private final ArrayList<Student> students;
+    private final StudentController studentController;
+    private final CareerController careerController;
+    private final StudentAndCareerController studentAndCareerController;
+
     private Optional<Student> student = Optional.empty();
     private Optional<Career> career = Optional.empty();
-    private Optional<StudentEnrollment> studentEnrollment = Optional.empty();
+    private Optional<StudentAndCareer> studentEnrollment = Optional.empty();
 
 
-    public ModifyStudent(ArrayList<Career> careers, ArrayList<StudentEnrollment> studentEnrollments, ArrayList<Student> students) {
-        this.careers = careers;
-        this.studentEnrollments = studentEnrollments;
-        this.students = students;
+    public ModifyStudent(StudentController studentController, CareerController careerController, StudentAndCareerController studentAndCareerController) {
+        this.studentController = studentController;
+        this.careerController = careerController;
+        this.studentAndCareerController = studentAndCareerController;
+
         init();
+
+        //carga la carreras en el combobox
+        loadCbxModel();
+
+        //Para que cuando alla algun cambio en las careras, automaticamente se actualize el comobox
+        careerController.addEventListener(this::loadCbxModel);
+
         btnSave.addActionListener(_ -> save());
-        btnSearch.addActionListener(_ -> setStudent(Student.findByID(students, txtId.getText())));
+
+        btnSearch.addActionListener(_ -> setStudent(txtId.getText()));
+
+        btnRevert.addActionListener(_ -> setDataToField());
+
         setEnabledFields(false);
     }
 
-    public boolean setStudent(Optional<Student> student) {
-        if (student.isEmpty()) {
+    public boolean setStudent(String id) {
+        var optionalId = studentController.get(id);
+
+        if (optionalId.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No se encontro el estudiante.");
             setEnabledFields(false);
             return false;
         }
 
-        var studentEnrollment = StudentEnrollment.findByStudentId(studentEnrollments, student.get().getID());
+        return prepareToEdit(optionalId.get());
+    }
+
+    public boolean prepareToEdit(Student student) {
+
+        var studentEnrollment = studentAndCareerController.get(student.getID());
 
         if (studentEnrollment.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No se encontro la carrera del estudiante.");
@@ -52,7 +75,7 @@ public class ModifyStudent extends JPanel {
             return false;
         }
 
-        var career = Career.findByCode(careers, studentEnrollment.get().getCareerCode());
+        var career = careerController.get(studentEnrollment.get().getCareerCode());
 
         if (career.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No se encontro la carrera del estudiante.");
@@ -60,17 +83,21 @@ public class ModifyStudent extends JPanel {
             return false;
         }
 
-        this.student = student;
+        this.student = Optional.of(student);
         this.career = career;
         this.studentEnrollment = studentEnrollment;
+
+        setDataToField();
+        setEnabledFields(true);
+        return true;
+    }
+
+    private void setDataToField() {
         txtFirstName.setText(student.get().getFirstName());
         txtLastName.setText(student.get().getLastName());
         txtId.setText(student.get().getID());
         cbActive.setSelected(student.get().isActive());
-        cbxCareer.setSelectedItem(career);
-
-        setEnabledFields(true);
-        return true;
+        cbxCareer.setSelectedItem(career.get());
     }
 
 
@@ -88,14 +115,16 @@ public class ModifyStudent extends JPanel {
 
             st.setFirstName(txtFirstName.getText());
             st.setLastName(txtLastName.getText());
-            st.setID(txtId.getText());
             st.setActive(cbActive.isSelected());
             cr = (Career) cbxCareer.getSelectedItem();
 
-            se.setStudentID(st.getID());
             se.setCareerCode(cr.getCode());
 
-            JOptionPane.showMessageDialog(this, "Estudiante registrado correctamente.");
+            studentController.fireChange();
+            studentAndCareerController.fireChange();
+            careerController.fireChange();
+
+            JOptionPane.showMessageDialog(this, "Datos registrado correctamente.");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error en los datos.");
         }
@@ -106,10 +135,14 @@ public class ModifyStudent extends JPanel {
         txtLastName.setEnabled(enabled);
         cbxCareer.setEnabled(enabled);
         btnSave.setEnabled(enabled);
+        btnRevert.setEnabled(enabled);
         if (!enabled) reset();
     }
 
     private void reset() {
+        student = Optional.empty();
+        career = Optional.empty();
+        studentEnrollment = Optional.empty();
         txtFirstName.setText("");
         txtLastName.setText("");
         txtId.setText("");
@@ -117,19 +150,24 @@ public class ModifyStudent extends JPanel {
         cbxCareer.setSelectedIndex(0);
     }
 
+    private void loadCbxModel() {
+        cbxCareerModel.removeAllElements();
+        cbxCareerModel.addAll(careerController.getAll());
+    }
+
 
     private void init() {
-        this.setLayout(new GridLayout(8, 2, 2, 2));
+        this.setLayout(new GridLayout(8, 2, 2, 4));
         txtLastName = new JTextField();
         txtFirstName = new JTextField();
         txtId = new JTextField();
-        cbxCareer = new JComboBox<>();
+        cbxCareerModel = new DefaultComboBoxModel<>();
+        cbxCareer = new JComboBox<>(cbxCareerModel);
         cbActive = new JCheckBox();
-
-        cbxCareer.setModel(new DefaultComboBoxModel<>(new Vector<>(careers)));
 
         btnSave = new JButton("Guardar Cambios");
         btnSearch = new JButton("Buscar");
+        btnRevert = new JButton("Revertir");
 
         this.add(new JLabel("Cédula:"));
         this.add(txtId);
@@ -143,7 +181,7 @@ public class ModifyStudent extends JPanel {
         this.add(cbActive);
         this.add(new JLabel("Carrera:"));
         this.add(cbxCareer);
-        this.add(new JLabel(""));
+        this.add(btnRevert);
         this.add(btnSave);
     }
 

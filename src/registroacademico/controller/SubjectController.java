@@ -1,12 +1,11 @@
 package registroacademico.controller;
 
 import registroacademico.Model.Subject;
+import registroacademico.repository.SubjectRepository;
 
-import java.util.List;
-
-public class SubjectController extends BaseController<Subject, Integer>{
-    public SubjectController(List<Subject> listOfModel) {
-        super(listOfModel);
+public class SubjectController extends BaseController<Subject, Integer> {
+    public SubjectController() {
+        super(new SubjectRepository());
     }
 
     @Override

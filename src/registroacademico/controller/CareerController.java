@@ -1,13 +1,12 @@
 package registroacademico.controller;
 
 import registroacademico.Model.Career;
+import registroacademico.repository.CareerRepository;
 
-import java.util.List;
+public class CareerController extends BaseController<Career, Integer> {
 
-public class CareerController extends BaseController<Career, Integer>{
-
-    public CareerController(List<Career> listOfModel) {
-        super(listOfModel);
+    public CareerController() {
+        super(new CareerRepository());
     }
 
     @Override

@@ -1,29 +1,37 @@
 package registroacademico.Model;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-import java.util.Optional;
-
+/**
+ * Carrera
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Career {
-    String name;
-    Faculty faculty;
-    int code;
+    /**
+     * Nombre de carrera
+     */
+    private String name;
+    /**
+     * Facultad de la carrera
+     */
+    private Faculty faculty;
+    /**
+     * Codigo de la carrera
+     */
+    private int code;
 
+    /**
+     * Solo se muestra el nombre, para que en los combobox solo se vea el nombre
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return this.name;
     }
 
-    public static Optional<Career> findByCode(List<Career> list, int code) {
-        return list.stream().filter(e -> e.getCode() == code).findFirst();
-    }
 }

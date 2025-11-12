@@ -2,11 +2,9 @@ package registroacademico.repository;
 
 import registroacademico.Model.AcademicRecord;
 
-import java.io.File;
-
 public class AcademicRecordRepository extends Repository<AcademicRecord> {
     public AcademicRecordRepository() {
-        super(new File("data/academic_record.txt"));
+        super("academic_record");
     }
 
     @Override

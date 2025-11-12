@@ -1,14 +1,13 @@
 package registroacademico.controller;
 
 import registroacademico.Model.Student;
+import registroacademico.repository.StudentRepository;
 
-import java.util.List;
 
+public class StudentController extends BaseController<Student, String> {
 
-public class StudentController extends BaseController<Student, String>{
-
-    public StudentController(List<Student> listOfModel) {
-        super(listOfModel);
+    public StudentController() {
+        super(new StudentRepository());
     }
 
 

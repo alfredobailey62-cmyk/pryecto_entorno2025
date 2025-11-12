@@ -4,23 +4,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.Optional;
-
-/*
-Clase de estudiante
+/**
+ * Representa a un estudiante
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Student {
+    /**
+     * Nombre del estudiante
+     */
     private String firstName;
+    /**
+     * Apellido del estudiante
+     */
     private String lastName;
+    /**
+     * Cedula del estudiante
+     */
     private String ID;
+    /**
+     * Indica si el estudiante esta activo
+     */
     private boolean isActive;
 
-    public static Optional<Student> findByID(List<Student> list, String ID) {
-        return list.stream().filter(s -> s.getID().equals(ID)).findFirst();
-    }
 }
 

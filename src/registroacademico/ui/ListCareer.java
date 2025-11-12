@@ -1,25 +1,25 @@
 package registroacademico.ui;
 
-import registroacademico.Model.Career;
+import registroacademico.controller.CareerController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class ListCareer extends JPanel {
-    private JButton btnRefresh;
-    private JButton btnDelete;
-    private JButton btnSearch;
     private JTable table;
     private DefaultTableModel model;
 
+    private final CareerController careerController;
 
-    private final ArrayList<Career> careers;
+    public ListCareer(CareerController careerController) {
+        this.careerController = careerController;
 
-    public ListCareer(ArrayList<Career> careers) {
-        this.careers = careers;
         init();
+
+        loadModel();
+
+        careerController.addEventListener(this::loadModel);
     }
 
 
@@ -39,10 +39,10 @@ public class ListCareer extends JPanel {
         table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane, BorderLayout.CENTER);
+        var scrollPane = new JScrollPane(table);
 
-        loadModel();
+        this.add(scrollPane, BorderLayout.CENTER);
+
     }
 
     /**
@@ -50,6 +50,8 @@ public class ListCareer extends JPanel {
      */
     private void loadModel() {
         model.setRowCount(0);
+
+        var careers = careerController.getAll();
 
         if (careers == null || careers.isEmpty()) {
             model.addRow(new Object[]{"(sin datos)", "", "",});

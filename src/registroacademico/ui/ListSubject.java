@@ -1,13 +1,13 @@
 package registroacademico.ui;
 
 import registroacademico.Model.Career;
-import registroacademico.Model.EnrollmentAndSubject;
-import registroacademico.Model.Subject;
+import registroacademico.controller.CareerAndSubjectController;
+import registroacademico.controller.CareerController;
+import registroacademico.controller.SubjectController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class ListSubject extends JPanel {
@@ -15,15 +15,17 @@ public class ListSubject extends JPanel {
     private DefaultTableModel model;
 
 
-    private final ArrayList<Subject> subjects;
-    private final ArrayList<Career> careers;
-    private final ArrayList<EnrollmentAndSubject> enrollmentAndSubjects;
+    private final CareerController careerController;
+    private final SubjectController subjectController;
+    private final CareerAndSubjectController careerAndSubjectController;
 
-    public ListSubject(ArrayList<Subject> subjects, ArrayList<Career> careers, ArrayList<EnrollmentAndSubject> enrollmentAndSubjects) {
-        this.subjects = subjects;
-        this.careers = careers;
-        this.enrollmentAndSubjects = enrollmentAndSubjects;
+    public ListSubject(CareerController careerController, SubjectController subjectController, CareerAndSubjectController careerAndSubjectController) {
+        this.careerController = careerController;
+        this.subjectController = subjectController;
+        this.careerAndSubjectController = careerAndSubjectController;
+
         init();
+
     }
 
 
@@ -55,21 +57,25 @@ public class ListSubject extends JPanel {
     private void loadModel() {
         model.setRowCount(0);
 
+        var subjects = subjectController.getAll();
+
         if (subjects == null || subjects.isEmpty()) {
             model.addRow(new Object[]{"(sin datos)", "", "",});
             return;
         }
 
-        for (var c : subjects) {
-            var enAndSub = EnrollmentAndSubject.findBySubjectCode(enrollmentAndSubjects, c.getCode());
+        for (var subject : subjects) {
+            var enAndSub = careerAndSubjectController.getBySubjectCode(subject.getCode());
+
             Optional<Career> career = Optional.empty();
+
             if (enAndSub.isPresent()) {
-                career = Career.findByCode(careers, enAndSub.get().getCareerCode());
+                career = careerController.get(enAndSub.get().getCareerCode());
             }
 
             model.addRow(new Object[]{
-                    c.getCode(),
-                    c.getName(),
+                    subject.getCode(),
+                    subject.getName(),
                     career.isPresent() ? career.get().getName() : "No esta",
             });
         }

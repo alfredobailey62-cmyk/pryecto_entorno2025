@@ -3,11 +3,9 @@ package registroacademico.repository;
 import registroacademico.Model.Career;
 import registroacademico.Model.Faculty;
 
-import java.io.File;
-
 public class CareerRepository extends Repository<Career> {
     public CareerRepository() {
-        super(new File("data/career.txt"));
+        super("career");
     }
 
     @Override

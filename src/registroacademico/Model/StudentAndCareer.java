@@ -5,18 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Materia
+ * Matricula de Estudiante
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Subject {
+public class StudentAndCareer {
     /**
-     * Nombre de la materia
+     * Cedula de Estudiante
      */
-    private String name;
+    private String studentID;
     /**
-     * Codigo de materia
+     * Codigo de Carrea
      */
-    private int code;
+    private int careerCode;
+
 }

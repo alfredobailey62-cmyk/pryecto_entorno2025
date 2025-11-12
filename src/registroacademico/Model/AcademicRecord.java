@@ -11,10 +11,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AcademicRecord {
-    //estudiante
+    /**
+     * Cedula de estudiante
+     */
     String studentID;
-    //codigo de asignatura
+    /**
+     * Codigo de asignatura
+     */
     int subjectCode;
-    //promedio del estudiante en la asignatura
+    /**
+     * Promedio de estudiante en la materia
+     */
     int average;
 }

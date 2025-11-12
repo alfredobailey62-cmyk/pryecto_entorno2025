@@ -4,9 +4,14 @@ import com.formdev.flatlaf.FlatLightLaf;
 
 
 public class Main {
-    public static void main(String[] args) {
+    static void main() {
         javax.swing.SwingUtilities.invokeLater(() -> {
+            // Da estilo a los componentes de java swing
             FlatLightLaf.setup();
+
+            //Estilo oscuro
+//            FlatDarkLaf.setup();
+
 
             // Facultades
 //            var careers = List.of(
@@ -117,6 +122,7 @@ public class Main {
 
 //            new MainFrame().setVisible(true);
 
+            // Crea y muestra el JFrame
             new Dashboard().setVisible(true);
         });
     }
