@@ -1,4 +1,4 @@
 Yoseph,Arauz,1-755-33,true
-esteaabb,este,rtyughjikl,true
-Ale,Arauz,986,true
 Erick,Abrego,12-54-98,true
+GUILLERMO,GUILLERMO,9-755-1472,true
+piripicho,piripicho,4-777-777,true
