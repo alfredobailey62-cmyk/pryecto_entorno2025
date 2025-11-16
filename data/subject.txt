@@ -1,3 +1,13 @@
+Fonética y Fonología del Inglés,1312
+Historia Universal Contemporánea,1313
+Turismo Ecológico Sostenible,1314
+Educación Física y Salud,1315
+Introducción al Derecho,1316
+Derecho Constitucional,1317
+Derecho Civil,1318
+Derecho Penal,1319
+Derecho Administrativo,1320
+Teoría del Estado,1321
 Lengua Española I,1300
 Lengua Española II,1301
 Psicología Educativa,1302
@@ -10,13 +20,3 @@ Planeamiento Educativo,1308
 Evaluación del Aprendizaje,1309
 Gramática Española Avanzada,1310
 Literatura Hispanoamericana,1311
-Fonética y Fonología del Inglés,1312
-Historia Universal Contemporánea,1313
-Turismo Ecológico Sostenible,1314
-Educación Física y Salud,1315
-Introducción al Derecho,1316
-Derecho Constitucional,1317
-Derecho Civil,1318
-Derecho Penal,1319
-Derecho Administrativo,1320
-Teoría del Estado,1321
