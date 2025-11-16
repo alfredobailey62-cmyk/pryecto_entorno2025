@@ -1,10 +1,13 @@
 package registroacademico.controller;
 
+import lombok.Getter;
 import registroacademico.repository.Repository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class FKController<T> extends Controller<T> {
+    @Getter
     /**
      * Coleccion del modelo
      */
@@ -28,6 +31,10 @@ public abstract class FKController<T> extends Controller<T> {
     public void add(T model) {
         listOfModel.add(model);
         fireChange();
+    }
+
+    public void addAll(List<T> models) {
+        listOfModel.addAll(models);
     }
 
 }

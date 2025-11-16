@@ -1,5 +1,6 @@
 package registroacademico.controller;
 
+import lombok.Getter;
 import registroacademico.repository.Repository;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Optional;
  * @param <ID> Id del Modelo
  */
 public abstract class BaseController<T, ID> extends Controller<T> {
-
+    @Getter
     /**
      * Colecion de Modelo, se optiene del .txt y se asocia a su id unico para mejorar las busquedas
      */

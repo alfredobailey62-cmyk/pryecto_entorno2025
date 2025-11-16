@@ -38,7 +38,7 @@ public class Dashboard extends JFrame {
 
         // Creacion de JPanels
         var addStudent = new AddStudent(studentController, careerController, studentAndCareerController);
-        var modifyStudent = new ModifyStudent(studentController, careerController, studentAndCareerController);
+        var modifyStudent = new ModifyStudent(studentController, careerController, studentAndCareerController, subjectController, academicRecordController, careerAndSubjectController);
 
         Consumer<String> findAndModify = (id) -> {
             if (modifyStudent.setStudent(id))
@@ -49,12 +49,14 @@ public class Dashboard extends JFrame {
         var listCareer = new ListCareer(careerController);
         var listSubject = new ListSubject(careerController, subjectController, careerAndSubjectController);
 
+//        var addAcademicRecord = new AddAcademicRecord(studentController, careerController, studentAndCareerController, subjectController, academicRecordController);
         // Agrega paneles a el menu
         tabs.add("Registrar", addStudent);
         tabs.add("Listar", listStudent);
         tabs.add("Buscar/Modificar", modifyStudent);
         tabs.add("Carreras", listCareer);
         tabs.add("Materias", listSubject);
+//        tabs.add("Notas", addAcademicRecord);
 
         // Agrega el menu al JFrame
         this.add(tabs);

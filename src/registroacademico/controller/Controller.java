@@ -34,7 +34,6 @@ public abstract class Controller<T> {
         eventListeners.forEach(Runnable::run);
     }
 
-
     /**
      * Agregar evento
      *

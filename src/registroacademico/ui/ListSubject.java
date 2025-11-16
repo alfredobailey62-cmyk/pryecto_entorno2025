@@ -38,7 +38,7 @@ public class ListSubject extends JPanel {
         model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // bloquea edición directa
+                return false;
             }
         };
 

@@ -21,7 +21,7 @@ public abstract class Repository<T> {
      * @param name Nombre del archivo .txt
      */
     protected Repository(String name) {
-        this.file = new File("/data/" + name + ".txt");
+        this.file = new File("data/" + name + ".txt");
     }
 
     /**
